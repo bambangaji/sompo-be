@@ -63,12 +63,12 @@ public class CatController {
     public ApiResponse<Cat> uploadCats(@RequestPart("image") MultipartFile imageFile) {
         try {
 
-            String filename = imageFile.getOriginalFilename().replaceFirst("[.][^.]+$", "");
+            String filename = imageFile.getOriginalFilename();
             String filePath = storageService.storeFile(imageFile,filename);
             BufferedImage image = ImageIO.read(imageFile.getInputStream());
             int width = image != null ? image.getWidth() : 0;
             int height = image != null ? image.getHeight() : 0;
-            Cat cat = new Cat(filename, filePath, width, height);
+            Cat cat = new Cat(filename.replaceFirst("[.][^.]+$", ""), filePath, width, height);
             Cat savedCat = catRepository.save(cat);
 
             return new ApiResponse<>(savedCat, 200, "Cat with image uploaded successfully");
