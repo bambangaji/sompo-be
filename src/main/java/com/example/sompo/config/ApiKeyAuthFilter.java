@@ -26,7 +26,11 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String apiKey = request.getHeader(API_KEY_HEADER);
-
+        String path = request.getRequestURI();
+        if (path.startsWith("/uploads/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (API_KEY.equals(apiKey)) {
             // Create an Authentication and set it in the SecurityContext
             Authentication auth = new UsernamePasswordAuthenticationToken("apiKeyUser", null, Collections.emptyList());
